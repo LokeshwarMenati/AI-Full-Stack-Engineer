@@ -1,0 +1,32 @@
+{
+  "name": "janaseva-ai",
+  "version": "1.0.0",
+  "description": "JANASEVA AI – Intelligent Public Grievance & Governance Platform",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
+    "dev:server": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client",
+    "build": "npm run build --workspace=client",
+    "seed": "npm run seed --workspace=server",
+    "test": "npm run test --workspace=server",
+    "test:e2e": "npx playwright test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "grievance-redressal",
+    "governance",
+    "ai",
+    "kerala",
+    "janaseva",
+    "cmo"
+  ],
+  "author": "Antigravity Engineer",
+  "license": "ISC"
+}
