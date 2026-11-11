@@ -179,3 +179,4 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
     </div>
   );
 }
+

@@ -59,3 +59,4 @@ describe('AI Grievance Assistant & Fallback Engine Tests', () => {
     expect(Array.isArray(res.body.matches)).toBe(true);
   });
 });
+

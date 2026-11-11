@@ -262,3 +262,4 @@ export const summarizeActionReport = async (reportText) => {
   const sentences = reportText.split('.').filter((s) => s.trim().length > 10);
   return sentences.slice(0, 2).join('. ') + '.';
 };
+

@@ -156,3 +156,4 @@ grievanceSchema.pre('save', function (next) {
 });
 
 export const Grievance = mongoose.model('Grievance', grievanceSchema);
+

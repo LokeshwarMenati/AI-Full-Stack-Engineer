@@ -101,3 +101,4 @@ flowchart TD
   2. Citizen solves server-generated Image CAPTCHA (single-use, 3-minute TTL).
   3. Server validates both layers before database queries or session token generation.
 - **Audit Logging:** Every sensitive administrative event (department assignment, report review, escalation, reopen) is permanently written to the `AuditLog` collection.
+

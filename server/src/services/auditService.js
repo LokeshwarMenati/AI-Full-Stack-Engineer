@@ -27,3 +27,4 @@ export const logAuditEvent = async ({
     console.error('[AuditLog] Error recording audit event:', err.message);
   }
 };
+

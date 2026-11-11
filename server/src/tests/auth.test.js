@@ -99,3 +99,4 @@ describe('Authentication & Dual CAPTCHA Endpoints', () => {
     expect(res.body.success).toBe(false);
   });
 });
+

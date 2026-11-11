@@ -34,3 +34,4 @@ export const createNotification = async ({
     console.error('[Notification] Error creating notification:', err.message);
   }
 };
+

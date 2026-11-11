@@ -121,3 +121,4 @@ To verify the Next.js production build:
 npm run build
 ```
 Builds all 15 routes cleanly into optimized static assets.
+

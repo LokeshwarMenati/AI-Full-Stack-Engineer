@@ -10,3 +10,4 @@ router.post('/duplicate-check', checkDuplicates);
 router.post('/summarize', protect, summarizeText);
 
 export default router;
+

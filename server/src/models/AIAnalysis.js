@@ -58,3 +58,4 @@ const aiAnalysisSchema = new mongoose.Schema(
 );
 
 export const AIAnalysis = mongoose.model('AIAnalysis', aiAnalysisSchema);
+

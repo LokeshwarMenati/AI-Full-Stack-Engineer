@@ -54,3 +54,4 @@ Department officers frequently file detailed technical reports mentioning bitume
    If the Gemini API key is omitted in local development or if Google Cloud endpoints experience rate limits or timeouts, the built-in contextual fallback engine takes over. The application continues functioning without throwing 500 errors or interrupting the citizen.
 4. **Zero Frontend Key Exposure:**  
    The `GEMINI_API_KEY` is maintained strictly in server-side environment variables and is never exposed to client bundles or browser consoles.
+

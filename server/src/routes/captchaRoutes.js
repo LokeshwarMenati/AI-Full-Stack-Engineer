@@ -7,3 +7,4 @@ router.get('/image', getImageCaptcha);
 router.post('/verify', verifyCaptcha);
 
 export default router;
+

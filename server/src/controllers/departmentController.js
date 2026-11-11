@@ -12,3 +12,4 @@ export const getDepartments = async (req, res, next) => {
     next(error);
   }
 };
+

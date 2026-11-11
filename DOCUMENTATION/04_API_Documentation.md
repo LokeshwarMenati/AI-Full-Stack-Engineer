@@ -123,3 +123,4 @@ The backend exposes a RESTful JSON API adhering to strict HTTP semantics, role-b
 | `GET` | `/departments` | Public | Lists active government departments and categories |
 | `GET` | `/notifications` | Authenticated | Retrieves user's unread notifications |
 | `PATCH` | `/notifications/read-all`| Authenticated | Marks all notifications as read |
+

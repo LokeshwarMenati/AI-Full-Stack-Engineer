@@ -35,3 +35,4 @@ export const generateReferenceNumber = async () => {
 
   return candidate;
 };
+

@@ -35,3 +35,4 @@ const contactEnquirySchema = new mongoose.Schema(
 );
 
 export const ContactEnquiry = mongoose.model('ContactEnquiry', contactEnquirySchema);
+

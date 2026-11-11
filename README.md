@@ -100,3 +100,4 @@ Detailed documentation is organized in the `DOCUMENTATION/` directory:
 
 ## ⚖️ License
 Fictional demonstration platform developed for evaluation purposes.
+

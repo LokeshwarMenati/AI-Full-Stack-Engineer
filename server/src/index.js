@@ -103,6 +103,8 @@ app.use('/api/notifications', notificationRoutes);
 // Error Handler
 app.use(errorHandler);
 
+import { startSlaBackgroundWorker } from './services/slaService.js';
+
 const PORT = process.env.PORT || 5000;
 
 // Connect to Database and start server
@@ -111,6 +113,8 @@ const startServer = async () => {
   server.listen(PORT, () => {
     console.log(`[Janaseva Server] Running on http://localhost:${PORT}`);
     console.log(`[Swagger Docs] Available on http://localhost:${PORT}/api/docs`);
+    // Start automated SLA background monitor
+    startSlaBackgroundWorker(io);
   });
 };
 
@@ -120,3 +124,4 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 export { app, server };
+

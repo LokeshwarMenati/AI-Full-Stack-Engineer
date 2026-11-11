@@ -8,6 +8,7 @@ import {
   reopenGrievance
 } from '../controllers/grievanceController.js';
 import { protect } from '../middlewares/authMiddleware.js';
+import { upload } from '../middlewares/uploadMiddleware.js';
 
 const router = express.Router();
 
@@ -17,10 +18,11 @@ router.get('/track/:referenceNumber', trackGrievance);
 // Authenticated routes
 router.use(protect);
 
-router.post('/', createGrievance);
+router.post('/', upload.single('attachment'), createGrievance);
 router.get('/', getGrievances);
 router.get('/:id', getGrievanceById);
 router.patch('/:id/status', updateStatus);
 router.post('/:id/reopen', reopenGrievance);
 
 export default router;
+

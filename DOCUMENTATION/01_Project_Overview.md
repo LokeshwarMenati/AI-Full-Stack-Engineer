@@ -35,3 +35,4 @@ The platform modernizes public grievance redressal across the state of Kerala by
 - **Bilingual Citizen Accessibility:** Full English and Malayalam (മലയാളം) language switching with accessible contrast meeting WCAG 2.2 AA standards.
 - **100 Realistic Demonstration Records:** Complete idempotent database seed spanning all 14 Kerala districts and all 5 mandatory statuses.
 - **Pure JavaScript Architecture:** Built strictly without TypeScript to comply 100% with technical constraints.
+

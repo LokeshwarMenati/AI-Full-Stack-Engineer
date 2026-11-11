@@ -47,3 +47,4 @@ export const SLA_HOURS = {
   'Medium': 96,
   'Low': 168
 };
+

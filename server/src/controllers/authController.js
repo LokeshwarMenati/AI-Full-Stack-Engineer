@@ -213,3 +213,4 @@ export const logout = async (req, res) => {
     message: 'Logged out successfully'
   });
 };
+

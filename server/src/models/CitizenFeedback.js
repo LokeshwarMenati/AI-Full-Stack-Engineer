@@ -45,3 +45,4 @@ const citizenFeedbackSchema = new mongoose.Schema(
 );
 
 export const CitizenFeedback = mongoose.model('CitizenFeedback', citizenFeedbackSchema);
+

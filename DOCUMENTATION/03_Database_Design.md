@@ -156,3 +156,4 @@ erDiagram
 ### F. `AuditLogs`
 - Records every administrative intervention (Department assignment, Escalations, Report Approvals, Logins).
 - Captures remote IP address, user-agent string, and parameter diffs.
+

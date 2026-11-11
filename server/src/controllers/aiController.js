@@ -80,3 +80,4 @@ export const summarizeText = async (req, res, next) => {
     next(error);
   }
 };
+

@@ -22,3 +22,4 @@ router.post('/escalate', escalateGrievance);
 router.post('/review-report', reviewActionReport);
 
 export default router;
+

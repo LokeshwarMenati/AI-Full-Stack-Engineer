@@ -40,3 +40,4 @@ const departmentAssignmentSchema = new mongoose.Schema(
 );
 
 export const DepartmentAssignment = mongoose.model('DepartmentAssignment', departmentAssignmentSchema);
+

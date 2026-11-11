@@ -7,3 +7,4 @@ const router = express.Router();
 router.post('/', protect, submitFeedback);
 
 export default router;
+

@@ -24,3 +24,4 @@ export const verifyCaptcha = (req, res) => {
     message: 'CAPTCHA verified successfully'
   });
 };
+

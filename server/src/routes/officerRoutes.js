@@ -18,3 +18,4 @@ router.post('/investigation', addInvestigationRemarks);
 router.post('/action-report', submitActionReport);
 
 export default router;
+

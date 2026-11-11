@@ -1,6 +1,7 @@
 import { Grievance } from '../models/Grievance.js';
 import { GrievanceHistory } from '../models/GrievanceHistory.js';
 import { Department } from '../models/Department.js';
+import { Attachment } from '../models/Attachment.js';
 import { generateReferenceNumber } from '../services/referenceIdService.js';
 import { analyzeComplaint } from '../services/geminiService.js';
 import { createNotification } from '../services/notificationService.js';
@@ -39,6 +40,20 @@ export const createGrievance = async (req, res, next) => {
       });
     }
 
+    // Optional supporting attachment handling
+    const attachmentIds = [];
+    if (req.file) {
+      const att = await Attachment.create({
+        uploadedBy: req.user._id,
+        fileName: req.file.originalname,
+        fileType: req.file.mimetype,
+        fileSize: req.file.size,
+        filePath: req.file.path,
+        isPrivate: true
+      });
+      attachmentIds.push(att._id);
+    }
+
     // 4. Create Grievance
     const grievance = await Grievance.create({
       referenceNumber,
@@ -50,8 +65,13 @@ export const createGrievance = async (req, res, next) => {
       description,
       priority: priority || aiResult.priority || 'Medium',
       status: GRIEVANCE_STATUSES.SUBMITTED,
-      aiAnalysis: aiResult
+      aiAnalysis: aiResult,
+      attachments: attachmentIds
     });
+
+    if (attachmentIds.length > 0) {
+      await Attachment.updateMany({ _id: { $in: attachmentIds } }, { grievance: grievance._id });
+    }
 
     // 5. Create immutable history record
     await GrievanceHistory.create({
@@ -417,3 +437,4 @@ export const reopenGrievance = async (req, res, next) => {
     next(error);
   }
 };
+
