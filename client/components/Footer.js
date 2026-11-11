@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Shield, Phone, Mail, MapPin, ExternalLink, Heart } from 'lucide-react';
+import { Shield, Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Footer() {
@@ -22,22 +22,22 @@ export default function Footer() {
                   {t('portalName')}
                 </span>
                 <p className="text-[10px] text-amber-400 font-medium uppercase tracking-wider">
-                  Governance Platform
+                  {t('govPrototype')}
                 </p>
               </div>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
-              An intelligent, transparent, AI-assisted public grievance redressal system prototype inspired by the Government of Kerala Chief Minister’s Public Grievance Redressal framework.
+              {t('footerDesc')}
             </p>
             <div className="p-3 bg-emerald-950/80 rounded border border-emerald-900 text-[11px] text-amber-200/90">
-              <strong>Evaluation Prototype:</strong> Created for WhiteMatrix Software Solutions machine test evaluation. Fictional demonstration portal.
+              {t('footerEvalNote')}
             </div>
           </div>
 
           {/* Col 2: Quick Links */}
           <div>
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4 border-b border-emerald-900 pb-2">
-              Civic Navigation
+              {t('civicNavTitle')}
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -81,22 +81,22 @@ export default function Footer() {
           {/* Col 3: Portal Access Roles */}
           <div>
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4 border-b border-emerald-900 pb-2">
-              Role Portals & APIs
+              {t('rolePortalsTitle')}
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/citizen/dashboard" className="hover:text-amber-400 transition flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Citizen Grievance Portal
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> {t('citizenGrievancePortal')}
                 </Link>
               </li>
               <li>
                 <Link href="/cmo/dashboard" className="hover:text-amber-400 transition flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> CMO Administration Command
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> {t('cmoAdminPortal')}
                 </Link>
               </li>
               <li>
                 <Link href="/officer/dashboard" className="hover:text-amber-400 transition flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Department Officer Desk
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span> {t('officerPortal')}
                 </Link>
               </li>
               <li>
@@ -106,12 +106,12 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-amber-400 transition flex items-center gap-1 text-slate-300 font-mono text-[11px]"
                 >
-                  Swagger OpenAPI Docs <ExternalLink className="w-3 h-3 text-amber-400" />
+                  {t('swaggerDocs')} <ExternalLink className="w-3 h-3 text-amber-400" />
                 </a>
               </li>
               <li>
                 <span className="text-[11px] text-slate-400 block pt-1">
-                  Cloudflare Turnstile & SVG CAPTCHA Dual Secured
+                  {t('dualSecuredNote')}
                 </span>
               </li>
             </ul>
@@ -120,24 +120,24 @@ export default function Footer() {
           {/* Col 4: State Demonstration Helplines */}
           <div>
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4 border-b border-emerald-900 pb-2">
-              Public Utility Hotlines
+              {t('hotlinesTitle')}
             </h4>
             <ul className="space-y-2 text-xs">
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-amber-400" />
-                <span>CM Public Grievance Call Centre: 1076</span>
+                <span>{t('cmCallCentre')}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-sky-400" />
-                <span>Water Authority Helpline: 1916</span>
+                <span>{t('kwaHelpline')}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-amber-400" />
-                <span>KSEB Electricity Outage: 1912</span>
+                <span>{t('ksebHelpline')}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-rose-400" />
-                <span>Emergency Services: 112</span>
+                <span>{t('emergencyHelpline')}</span>
               </li>
               <li className="flex items-center gap-2 pt-1">
                 <Mail className="w-3.5 h-3.5 text-slate-400" />
@@ -145,7 +145,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                <span>Government Secretariat, Thiruvananthapuram, Kerala</span>
+                <span>{t('secretariatAddress')}</span>
               </li>
             </ul>
           </div>
@@ -156,14 +156,13 @@ export default function Footer() {
       <div className="bg-[#061F19] py-4 px-4 sm:px-6 lg:px-8 border-t border-emerald-950 text-center text-xs text-slate-400">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <p>
-            © 2026 JANASEVA AI Platform. Designed according to Government of India Digital Service Guidelines (GIGW) & WCAG 2.2 AA.
+            {t('footerCopyright')}
           </p>
           <p className="text-[11px] text-amber-400 font-mono">
-            Candidate Recruitment Machine Test Submission
+            {t('machineTestSub')}
           </p>
         </div>
       </div>
     </footer>
   );
 }
-

@@ -43,7 +43,7 @@ export default function Navbar() {
                   {t('portalName')}
                 </span>
                 <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase">
-                  Gov Prototype
+                  {t('govPrototype')}
                 </span>
               </div>
               <p className="text-[11px] text-emerald-200/90 tracking-wide font-sans hidden sm:block">
@@ -93,10 +93,10 @@ export default function Navbar() {
                   <User className="w-4 h-4" />
                   <span>
                     {user.role === 'cmo_admin'
-                      ? 'CMO Portal'
+                      ? t('cmoPortal')
                       : user.role === 'officer'
-                      ? 'Officer Desk'
-                      : 'My Grievances'}
+                      ? t('officerDesk')
+                      : t('myGrievances')}
                   </span>
                 </Link>
                 <button

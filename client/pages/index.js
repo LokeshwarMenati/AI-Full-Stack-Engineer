@@ -33,23 +33,19 @@ export default function Home() {
   const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
-    // Fetch live statistics and departments from backend
     apiRequest('/departments')
       .then((data) => {
         if (data.departments) setDepartments(data.departments);
       })
       .catch(() => {});
 
-    // Try fetching cmo stats or public numbers
     apiRequest('/cmo/statistics')
       .then((data) => {
         if (data.statistics) {
           setStats(data.statistics);
         }
       })
-      .catch(() => {
-        // Fallback default state
-      });
+      .catch(() => {});
   }, []);
 
   const handleQuickTrack = (e) => {
@@ -69,7 +65,7 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold tracking-wide uppercase">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Next-Gen Governance • Powered by Google Gemini AI</span>
+              <span>{t('aiBadge')}</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-serif leading-tight">
@@ -109,14 +105,14 @@ export default function Home() {
                   type="text"
                   value={trackRef}
                   onChange={(e) => setTrackRef(e.target.value)}
-                  placeholder="Quick Track e.g. KGR-2026-100001"
+                  placeholder={t('quickTrackPlaceholder')}
                   className="w-full px-3 py-2 text-slate-900 text-sm focus:outline-none bg-transparent uppercase font-medium placeholder:normal-case"
                 />
                 <button
                   type="submit"
                   className="bg-[#0F4336] hover:bg-emerald-800 text-white px-5 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition shrink-0"
                 >
-                  Track
+                  {t('trackBtn')}
                 </button>
               </form>
             </div>
@@ -139,7 +135,7 @@ export default function Home() {
             <p className="text-3xl font-bold text-slate-900 mt-2 font-serif">
               {stats.totalGrievances || 100}+
             </p>
-            <p className="text-[11px] text-slate-500 mt-1">Aggregated across 14 Kerala districts</p>
+            <p className="text-[11px] text-slate-500 mt-1">{t('totalComplaintsSub')}</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md hover:shadow-lg transition">
@@ -154,7 +150,7 @@ export default function Home() {
             <p className="text-3xl font-bold text-emerald-800 mt-2 font-serif">
               {stats.resolved || 20}+
             </p>
-            <p className="text-[11px] text-slate-500 mt-1">With citizen satisfaction reports</p>
+            <p className="text-[11px] text-slate-500 mt-1">{t('resolvedComplaintsSub')}</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md hover:shadow-lg transition">
@@ -169,7 +165,7 @@ export default function Home() {
             <p className="text-3xl font-bold text-amber-700 mt-2 font-serif">
               {stats.resolutionRate || 20}%
             </p>
-            <p className="text-[11px] text-slate-500 mt-1">SLA compliant redressal average</p>
+            <p className="text-[11px] text-slate-500 mt-1">{t('resolutionRateSub')}</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md hover:shadow-lg transition">
@@ -184,7 +180,7 @@ export default function Home() {
             <p className="text-3xl font-bold text-sky-800 mt-2 font-serif">
               {departments.length || 8}
             </p>
-            <p className="text-[11px] text-slate-500 mt-1">Government nodal departments</p>
+            <p className="text-[11px] text-slate-500 mt-1">{t('activeDepartmentsSub')}</p>
           </div>
         </div>
       </section>
@@ -193,13 +189,13 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-            Transparent Workflow
+            {t('workflowBadge')}
           </span>
           <h2 className="text-3xl font-bold text-slate-900 mt-3 font-serif">
-            Complete End-to-End Grievance Lifecycle
+            {t('workflowTitle')}
           </h2>
           <p className="text-sm text-slate-600 mt-2">
-            Every complaint follows a structured, role-authorized trajectory overseen by the Chief Minister’s Office.
+            {t('workflowSubtitle')}
           </p>
         </div>
 
@@ -208,9 +204,9 @@ export default function Home() {
             <div className="w-10 h-10 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-sm mb-4">
               1
             </div>
-            <h3 className="text-base font-bold text-slate-900">1. Citizen Submission</h3>
+            <h3 className="text-base font-bold text-slate-900">{t('step1Title')}</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Citizen submits grievance with details. Google Gemini analyzes text and suggests department and priority instantly.
+              {t('step1Desc')}
             </p>
           </div>
 
@@ -218,9 +214,9 @@ export default function Home() {
             <div className="w-10 h-10 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-sm mb-4">
               2
             </div>
-            <h3 className="text-base font-bold text-slate-900">2. CMO Administrative Review</h3>
+            <h3 className="text-base font-bold text-slate-900">{t('step2Title')}</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              CMO secretariat evaluates AI recommendations, sets SLA timeline, and assigns to the nodal department officer.
+              {t('step2Desc')}
             </p>
           </div>
 
@@ -228,9 +224,9 @@ export default function Home() {
             <div className="w-10 h-10 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-sm mb-4">
               3
             </div>
-            <h3 className="text-base font-bold text-slate-900">3. Field Investigation</h3>
+            <h3 className="text-base font-bold text-slate-900">{t('step3Title')}</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Designated department officer conducts field investigation, logs progress remarks, and files the Action-Taken Report.
+              {t('step3Desc')}
             </p>
           </div>
 
@@ -238,9 +234,9 @@ export default function Home() {
             <div className="w-10 h-10 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-sm mb-4">
               4
             </div>
-            <h3 className="text-base font-bold text-slate-900">4. Resolution & Feedback</h3>
+            <h3 className="text-base font-bold text-slate-900">{t('step4Title')}</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              CMO approves resolution. Citizen receives SMS/in-app notification and rates satisfaction or can reopen if unaddressed.
+              {t('step4Desc')}
             </p>
           </div>
         </div>
@@ -250,7 +246,7 @@ export default function Home() {
             href="/how-it-works"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 uppercase tracking-wider"
           >
-            <span>Explore Detailed 8-Stage Architecture</span>
+            <span>{t('exploreWorkflowBtn')}</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
@@ -262,17 +258,17 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-200/60 px-3 py-1 rounded-full">
-                Public Administration
+                {t('deptsBadge')}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2 font-serif">
-                Key Redressal Departments
+                {t('deptsTitle')}
               </h2>
             </div>
             <Link
               href="/departments"
               className="mt-3 sm:mt-0 text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1"
             >
-              <span>View All 8 Departments</span>
+              <span>{t('viewAllDepts')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -300,12 +296,12 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-emerald-700 font-semibold">Active Redressal</span>
+                  <span className="text-[11px] text-emerald-700 font-semibold">{t('activeRedressal')}</span>
                   <Link
                     href={`/citizen/submit?dept=${encodeURIComponent(dept.name)}`}
                     className="text-xs font-bold text-slate-900 hover:text-emerald-800"
                   >
-                    File Grievance →
+                    {t('fileGrievanceArrow')}
                   </Link>
                 </div>
               </div>
@@ -320,13 +316,13 @@ export default function Home() {
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
             <div className="md:col-span-2 space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                Citizen Privacy & Security First
+                {t('securityBadge')}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold font-serif">
-                Protected by Cloudflare Turnstile & SVG Image Verification
+                {t('securityTitle')}
               </h2>
               <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
-                Every grievance submission is shielded with dual-layer bot protection, encrypted data handling, and privacy masking. Public tracking never exposes citizen identity or personal phone numbers.
+                {t('securityDesc')}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row md:flex-col gap-3 justify-center">
@@ -334,13 +330,13 @@ export default function Home() {
                 href="/citizen/submit"
                 className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-3 rounded-lg text-center text-sm shadow-md transition"
               >
-                File Verified Grievance
+                {t('fileVerifiedGrievanceBtn')}
               </Link>
               <Link
                 href="/about"
                 className="border border-emerald-600 hover:bg-emerald-800/80 text-white font-medium px-6 py-3 rounded-lg text-center text-sm transition"
               >
-                Learn About Service Principles
+                {t('learnServicePrinciplesBtn')}
               </Link>
             </div>
           </div>
@@ -349,4 +345,3 @@ export default function Home() {
     </div>
   );
 }
-

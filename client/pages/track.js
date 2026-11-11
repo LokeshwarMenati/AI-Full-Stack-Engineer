@@ -15,12 +15,14 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { apiRequest } from '../lib/api';
 
 export default function TrackGrievancePage() {
   const router = useRouter();
   const { ref: queryRef } = router.query;
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   const [referenceInput, setReferenceInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -74,7 +76,6 @@ export default function TrackGrievancePage() {
 
     setReopenLoading(true);
     try {
-      // Find full grievance ID or call reopen by reference
       const res = await apiRequest(`/grievances/${trackingData.referenceNumber}/reopen`, {
         method: 'POST',
         body: JSON.stringify({ reason: reopenReason })
@@ -93,21 +94,38 @@ export default function TrackGrievancePage() {
     }
   };
 
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'Submitted':
+        return t('statusSubmitted');
+      case 'Under Review':
+        return t('statusUnderReview');
+      case 'In Progress':
+        return t('statusInProgress');
+      case 'Resolved':
+        return t('statusResolved');
+      case 'Reopened':
+        return t('statusReopened');
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-8 font-sans">
       <Head>
-        <title>Track Grievance Status | JANASEVA AI</title>
+        <title>{t('trackPageTitle')} | JANASEVA AI</title>
       </Head>
 
       <div className="text-center space-y-2">
         <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-          Public & Citizen Verification
+          {t('trackBadge')}
         </span>
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 font-serif">
-          Track Grievance Redressal Progress
+          {t('trackPageTitle')}
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-          Enter your unique reference ID to verify ground investigation updates, CMO remarks, and resolution timeline.
+          {t('trackPageSubtitle')}
         </p>
       </div>
 
@@ -130,7 +148,7 @@ export default function TrackGrievancePage() {
             disabled={loading}
             className="bg-[#0F4336] hover:bg-emerald-900 text-white font-bold text-xs uppercase tracking-wider px-8 py-3 rounded-lg transition disabled:opacity-50 shadow shrink-0"
           >
-            {loading ? 'Searching...' : 'Track Status'}
+            {loading ? t('searchingTrackBtn') : t('searchTrackBtn')}
           </button>
         </form>
       </div>
@@ -178,7 +196,7 @@ export default function TrackGrievancePage() {
                     : 'bg-slate-200 text-slate-950'
                 }`}
               >
-                {trackingData.status}
+                {getStatusLabel(trackingData.status)}
               </span>
             </div>
           </div>
@@ -257,7 +275,7 @@ export default function TrackGrievancePage() {
             {/* Lifecycle Timeline */}
             <div className="space-y-4 pt-2">
               <h3 className="text-sm font-bold text-slate-900 font-serif">
-                Immutable Status History Chain
+                {t('statusHistoryTitle')}
               </h3>
 
               <div className="space-y-3 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-200">
@@ -269,7 +287,7 @@ export default function TrackGrievancePage() {
                       </div>
                       <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 flex-grow text-xs">
                         <div className="flex items-center justify-between font-semibold text-slate-900">
-                          <span>Status: {item.newStatus}</span>
+                          <span>Status: {getStatusLabel(item.newStatus)}</span>
                           <span className="text-[10px] text-slate-400 font-normal">
                             {new Date(item.createdAt).toLocaleString()}
                           </span>
@@ -298,7 +316,7 @@ export default function TrackGrievancePage() {
                   className="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-4 py-2 rounded-lg transition shrink-0 shadow-sm flex items-center gap-1.5"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Reopen Grievance</span>
+                  <span>{t('reopenGrievanceBtn')}</span>
                 </button>
               </div>
             )}
@@ -346,7 +364,7 @@ export default function TrackGrievancePage() {
                   disabled={reopenLoading}
                   className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition disabled:opacity-50"
                 >
-                  {reopenLoading ? 'Submitting...' : 'Reopen Grievance'}
+                  {reopenLoading ? 'Submitting...' : t('reopenGrievanceBtn')}
                 </button>
               </div>
             </form>
@@ -356,4 +374,3 @@ export default function TrackGrievancePage() {
     </div>
   );
 }
-
