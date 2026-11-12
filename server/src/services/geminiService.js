@@ -90,7 +90,7 @@ export const analyzeComplaint = async ({ subject, description, district, grievan
   let modelNameUsed = 'rule-contextual-v1';
 
   if (genAI && process.env.GEMINI_API_KEY) {
-    const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+    const candidateModels = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
     for (const m of candidateModels) {
       try {
         const model = genAI.getGenerativeModel({

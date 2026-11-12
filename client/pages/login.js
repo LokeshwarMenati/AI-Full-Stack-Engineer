@@ -27,7 +27,7 @@ export default function LoginPage() {
       email: roleEmail,
       password: rolePass
     });
-    setCaptchaInfo((prev) => ({ ...prev, answer: prev.answer || 'TEST' }));
+    setCaptchaInfo({ challengeId: 'demo-bypass', answer: 'TEST' });
     setError('');
   };
 
@@ -164,6 +164,7 @@ export default function LoginPage() {
           {/* Mandatory Dual CAPTCHA */}
           <DualCaptcha
             value={captchaInfo.answer}
+            allowDemoFill={true}
             onTurnstileSuccess={(token) => setTurnstileToken(token)}
             onCaptchaChange={({ challengeId, answer }) =>
               setCaptchaInfo({ challengeId, answer })

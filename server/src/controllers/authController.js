@@ -100,23 +100,29 @@ export const login = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
     }
 
-    // Dual CAPTCHA Verification
-    // Layer 1: Cloudflare Turnstile
-    const turnstileCheck = await verifyTurnstileToken(turnstileToken, req.ip);
-    if (!turnstileCheck.success) {
-      return res.status(400).json({
-        success: false,
-        message: 'Cloudflare Turnstile verification failed'
-      });
-    }
+    // Dual CAPTCHA Verification:
+    // Allow TEST bypass ONLY for the 3 designated demo accounts when using explicit demo bypass
+    const isDemoAccount = ['citizen@janaseva.demo', 'cmo@janaseva.demo', 'officer@janaseva.demo'].includes((email || '').toLowerCase());
+    const isDemoBypass = isDemoAccount && (captchaAnswer || '').toUpperCase() === 'TEST' && (captchaId === 'demo-bypass' || !captchaId);
 
-    // Layer 2: Image CAPTCHA
-    const captchaCheck = verifyImageCaptcha(captchaId, captchaAnswer);
-    if (!captchaCheck.valid) {
-      return res.status(400).json({
-        success: false,
-        message: captchaCheck.message || 'Image CAPTCHA verification failed'
-      });
+    if (!isDemoBypass) {
+      // Layer 1: Cloudflare Turnstile
+      const turnstileCheck = await verifyTurnstileToken(turnstileToken, req.ip);
+      if (!turnstileCheck.success) {
+        return res.status(400).json({
+          success: false,
+          message: 'Cloudflare Turnstile verification failed'
+        });
+      }
+
+      // Layer 2: Image CAPTCHA
+      const captchaCheck = verifyImageCaptcha(captchaId, captchaAnswer);
+      if (!captchaCheck.valid) {
+        return res.status(400).json({
+          success: false,
+          message: captchaCheck.message || 'Image CAPTCHA verification failed'
+        });
+      }
     }
 
     // Find user with password included

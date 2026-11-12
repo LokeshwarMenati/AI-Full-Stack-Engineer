@@ -410,17 +410,22 @@ export default async function handler(req, res) {
   if (endpoint === 'auth/login' && req.method === 'POST') {
     const { email = '', password, captchaId, captchaAnswer = '' } = req.body || {};
 
-    const isDemoAccount = ['citizen@janaseva.demo', 'cmo@janaseva.demo', 'officer@janaseva.demo'].includes(email.toLowerCase());
+    const isDemoAccount = ['citizen@janaseva.demo', 'cmo@janaseva.demo', 'officer@janaseva.demo'].includes((email || '').toLowerCase());
+    const isDemoBypass = isDemoAccount && (captchaAnswer || '').toUpperCase() === 'TEST';
 
-    // Validate CAPTCHA if provided
-    if (captchaId && captchaAnswer) {
+    // Strict CAPTCHA Validation:
+    // TEST bypass is restricted EXCLUSIVELY to the 3 designated official demo accounts.
+    // For all regular citizen and public logins, valid CAPTCHA matching is strictly required.
+    if (!isDemoBypass) {
+      if (!captchaId || !captchaAnswer) {
+        return res.status(400).json({ success: false, message: 'Security CAPTCHA verification is mandatory.' });
+      }
       const stored = CAPTCHA_STORE[captchaId];
-      const answerMatch = stored && stored.text === captchaAnswer.toLowerCase();
-      const isTestToken = captchaAnswer.toUpperCase() === 'TEST';
-
-      if (!answerMatch && !isTestToken && !isDemoAccount) {
+      if (!stored || stored.expires < Date.now() || stored.text !== captchaAnswer.trim().toLowerCase()) {
         return res.status(400).json({ success: false, message: 'Invalid security CAPTCHA characters. Please try again.' });
       }
+      // Single-use CAPTCHA: purge once consumed
+      delete CAPTCHA_STORE[captchaId];
     }
 
     const user = USERS.find((u) => u.email.toLowerCase() === (email || '').toLowerCase());
@@ -441,10 +446,20 @@ export default async function handler(req, res) {
 
   // 6. POST /api/auth/register
   if (endpoint === 'auth/register' && req.method === 'POST') {
-    const { name, email, mobileNumber, password } = req.body || {};
+    const { name, email, mobileNumber, password, captchaId, captchaAnswer } = req.body || {};
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'All required fields must be filled.' });
     }
+
+    // Strict CAPTCHA check for registration: NEVER allow TEST bypass for public registrations
+    if (!captchaId || !captchaAnswer) {
+      return res.status(400).json({ success: false, message: 'Security CAPTCHA verification is required for registration.' });
+    }
+    const stored = CAPTCHA_STORE[captchaId];
+    if (!stored || stored.expires < Date.now() || stored.text !== (captchaAnswer || '').trim().toLowerCase()) {
+      return res.status(400).json({ success: false, message: 'Invalid security CAPTCHA verification characters. Please try again.' });
+    }
+    delete CAPTCHA_STORE[captchaId];
 
     const existing = USERS.find((u) => u.email.toLowerCase() === email.toLowerCase());
     if (existing) {
@@ -510,7 +525,7 @@ Respond strictly in valid JSON format:
   "confidence": 0.95
 }`;
 
-        const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+        const candidateModels = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
         let geminiData = null;
         let successfulModel = 'gemini-3.5-flash';
 
@@ -550,7 +565,7 @@ Respond strictly in valid JSON format:
               success: true,
               analysis: {
                 ...parsed,
-                source: `Google Gemini 3.5 Flash (Production Cloud LLM)`,
+                source: `Google Gemini (${successfulModel}) (Production Cloud LLM)`,
                 duplicateWarning: false
               }
             });

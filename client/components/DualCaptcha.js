@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { RefreshCw, ShieldCheck, AlertCircle } from 'lucide-react';
 import { apiRequest } from '../lib/api';
 
-export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, errors = {}, value = '' }) {
+export default function DualCaptcha({
+  onTurnstileSuccess,
+  onCaptchaChange,
+  errors = {},
+  value = '',
+  allowDemoFill = false
+}) {
   const [captchaData, setCaptchaData] = useState({ challengeId: '', svg: '' });
   const [captchaAnswer, setCaptchaAnswer] = useState(value || '');
   const [loadingCaptcha, setLoadingCaptcha] = useState(true);
@@ -14,7 +20,9 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
   useEffect(() => {
     if (value !== undefined && value !== captchaAnswer) {
       setCaptchaAnswer(value);
-      if (captchaData.challengeId) {
+      if (value.toUpperCase() === 'TEST') {
+        onCaptchaChange({ challengeId: 'demo-bypass', answer: 'TEST' });
+      } else if (captchaData.challengeId) {
         onCaptchaChange({ challengeId: captchaData.challengeId, answer: value });
       }
     }
@@ -154,17 +162,19 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
             Layer 2: Image CAPTCHA Verification
           </label>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setCaptchaAnswer('TEST');
-                onCaptchaChange({ challengeId: captchaData.challengeId, answer: 'TEST' });
-              }}
-              className="text-xs text-amber-800 underline hover:text-amber-950 font-medium"
-              title="Auto-fill universal demo test answer"
-            >
-              [Auto-Fill Demo]
-            </button>
+            {allowDemoFill && (
+              <button
+                type="button"
+                onClick={() => {
+                  setCaptchaAnswer('TEST');
+                  onCaptchaChange({ challengeId: 'demo-bypass', answer: 'TEST' });
+                }}
+                className="text-xs text-amber-800 underline hover:text-amber-950 font-medium"
+                title="Auto-fill demo test answer (strictly for demo accounts)"
+              >
+                [Auto-Fill Demo]
+              </button>
+            )}
             <button
               type="button"
               onClick={fetchImageCaptcha}
