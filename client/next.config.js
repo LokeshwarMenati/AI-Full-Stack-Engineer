@@ -5,14 +5,17 @@ const nextConfig = {
     unoptimized: true
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*'
-      }
-    ];
+    // Only rewrite to external backend if EXPLICITLY configured
+    if (process.env.BACKEND_API_URL) {
+      return [
+        {
+          source: '/api/:path*',
+          destination: `${process.env.BACKEND_API_URL}/:path*`
+        }
+      ];
+    }
+    return [];
   }
 };
 
 module.exports = nextConfig;
-
