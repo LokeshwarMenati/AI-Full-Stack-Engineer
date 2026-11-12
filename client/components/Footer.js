@@ -100,14 +100,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a
-                  href="http://localhost:5000/api/docs"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/api-docs"
                   className="hover:text-amber-400 transition flex items-center gap-1 text-slate-300 font-mono text-[11px]"
                 >
                   {t('swaggerDocs')} <ExternalLink className="w-3 h-3 text-amber-400" />
-                </a>
+                </Link>
               </li>
               <li>
                 <span className="text-[11px] text-slate-400 block pt-1">

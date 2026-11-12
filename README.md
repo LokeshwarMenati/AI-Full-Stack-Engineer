@@ -68,9 +68,11 @@ npm run seed
 ```bash
 npm run dev
 ```
-- **Frontend Application:** [http://localhost:3000](http://localhost:3000)
-- **Backend API Server:** [http://localhost:5000](http://localhost:5000)
-- **Interactive Swagger API Docs:** [http://localhost:5000/api/docs](http://localhost:5000/api/docs)
+- **Live Production Application:** [https://client-two-blue-90.vercel.app](https://client-two-blue-90.vercel.app)
+- **Public Interactive Swagger OpenAPI Docs:** [https://client-two-blue-90.vercel.app/api-docs](https://client-two-blue-90.vercel.app/api-docs)
+- **Frontend Development Application:** [http://localhost:3000](http://localhost:3000)
+- **Backend Development API Server:** [http://localhost:5000](http://localhost:5000)
+- **Local Swagger API Docs:** [http://localhost:5000/api/docs](http://localhost:5000/api/docs)
 - **Health Check:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
 
 ### 5. Run Automated Tests

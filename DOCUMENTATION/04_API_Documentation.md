@@ -3,8 +3,10 @@
 ## 1. Overview & Base URL
 The backend exposes a RESTful JSON API adhering to strict HTTP semantics, role-based authorization headers, and structured error envelopes.
 
-- **Base URL:** `http://localhost:5000/api`
-- **Interactive Swagger Documentation:** Available at `http://localhost:5000/api/docs`
+- **Live Production Swagger UI:** [https://client-two-blue-90.vercel.app/api-docs](https://client-two-blue-90.vercel.app/api-docs)
+- **Live Production Raw OpenAPI Spec:** [https://client-two-blue-90.vercel.app/api/docs/spec](https://client-two-blue-90.vercel.app/api/docs/spec)
+- **Local Base URL:** `http://localhost:5000/api`
+- **Local Swagger Documentation:** Available at `http://localhost:5000/api/docs`
 - **Authentication Scheme:** `Authorization: Bearer <JWT_TOKEN>`
 
 ---

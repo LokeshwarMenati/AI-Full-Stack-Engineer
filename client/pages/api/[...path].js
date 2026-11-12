@@ -225,6 +225,146 @@ export default async function handler(req, res) {
   const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
   const authUser = verifyToken(token);
 
+  // 0. GET /api/docs/spec (OpenAPI 3.0 Documentation Spec)
+  if (endpoint === 'docs/spec' && req.method === 'GET') {
+    return res.status(200).json({
+      openapi: '3.0.0',
+      info: {
+        title: 'JANASEVA AI – Grievance Redressal & Governance API',
+        version: '1.0.0',
+        description: 'Government-grade REST API for Public Grievance Redressal (Recruitment Prototype for WhiteMatrix Software Solutions evaluation inspired by CM Kerala grievance portal).',
+        contact: {
+          name: 'JANASEVA AI Platform Support',
+          email: 'support@janaseva.demo'
+        }
+      },
+      servers: [
+        {
+          url: '/api',
+          description: 'Production Vercel Cloud Serverless API'
+        },
+        {
+          url: 'http://localhost:5000/api',
+          description: 'Local Development Server'
+        }
+      ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT'
+          }
+        }
+      },
+      paths: {
+        '/auth/register': {
+          post: {
+            summary: 'Register citizen with Dual CAPTCHA',
+            tags: ['Authentication'],
+            responses: { 201: { description: 'User registered successfully' } }
+          }
+        },
+        '/auth/login': {
+          post: {
+            summary: 'Authenticate citizen or administrative officer with Dual CAPTCHA',
+            tags: ['Authentication'],
+            responses: { 200: { description: 'Authentication successful with JWT' } }
+          }
+        },
+        '/captcha/image': {
+          get: {
+            summary: 'Generate SVG image CAPTCHA challenge',
+            tags: ['CAPTCHA'],
+            responses: { 200: { description: 'Returns SVG and challengeId' } }
+          }
+        },
+        '/departments': {
+          get: {
+            summary: 'List all 8 nodal redressal departments',
+            tags: ['Departments'],
+            responses: { 200: { description: 'List of departments with contact info and SLAs' } }
+          }
+        },
+        '/grievances': {
+          get: {
+            summary: 'List grievances (filtered by role)',
+            tags: ['Grievances'],
+            security: [{ bearerAuth: [] }],
+            responses: { 200: { description: 'List of grievances' } }
+          },
+          post: {
+            summary: 'Submit new citizen grievance',
+            tags: ['Grievances'],
+            security: [{ bearerAuth: [] }],
+            responses: { 201: { description: 'Grievance submitted' } }
+          }
+        },
+        '/grievances/track/{referenceNumber}': {
+          get: {
+            summary: 'Track grievance progress with privacy masking',
+            tags: ['Grievances'],
+            responses: { 200: { description: 'Public tracking timeline' } }
+          }
+        },
+        '/grievances/{referenceNumber}/reopen': {
+          post: {
+            summary: 'Reopen a resolved grievance with citizen justification',
+            tags: ['Grievances'],
+            security: [{ bearerAuth: [] }],
+            responses: { 200: { description: 'Grievance reopened' } }
+          }
+        },
+        '/cmo/metrics': {
+          get: {
+            summary: 'CMO dashboard aggregation analytics across 14 Kerala districts',
+            tags: ['CMO Administration'],
+            security: [{ bearerAuth: [] }],
+            responses: { 200: { description: 'Real-time aggregation stats' } }
+          }
+        },
+        '/cmo/grievances/{id}/assign': {
+          post: {
+            summary: 'Assign department/officer to grievance',
+            tags: ['CMO Administration'],
+            security: [{ bearerAuth: [] }],
+            responses: { 200: { description: 'Department assigned' } }
+          }
+        },
+        '/officer/grievances': {
+          get: {
+            summary: 'Department officer grievances list (department isolated)',
+            tags: ['Department Officer'],
+            security: [{ bearerAuth: [] }],
+            responses: { 200: { description: 'List of assigned grievances' } }
+          }
+        },
+        '/officer/grievances/{id}/submit-report': {
+          post: {
+            summary: 'Submit Action-Taken Report (ATR)',
+            tags: ['Department Officer'],
+            security: [{ bearerAuth: [] }],
+            responses: { 200: { description: 'Action-taken report submitted' } }
+          }
+        },
+        '/ai/analyze': {
+          post: {
+            summary: 'Analyze grievance text via Google Gemini AI',
+            tags: ['AI Assistant'],
+            responses: { 200: { description: 'AI classification & recommendations' } }
+          }
+        },
+        '/contact': {
+          post: {
+            summary: 'Submit public citizen enquiry',
+            tags: ['Public Enquiries'],
+            responses: { 201: { description: 'Enquiry received' } }
+          }
+        }
+      }
+    });
+  }
+
   // 1. GET /api/health
   if (endpoint === 'health' && req.method === 'GET') {
     return res.status(200).json({
