@@ -87,17 +87,20 @@ export const analyzeComplaint = async ({ subject, description, district, grievan
   }
 
   let aiResult = null;
+  let modelNameUsed = 'rule-contextual-v1';
 
   if (genAI && process.env.GEMINI_API_KEY) {
-    try {
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: {
-          responseMimeType: 'application/json'
-        }
-      });
+    const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+    for (const m of candidateModels) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: m,
+          generationConfig: {
+            responseMimeType: 'application/json'
+          }
+        });
 
-      const prompt = `You are the Official AI Grievance Classification Engine for JANASEVA AI (Government of Kerala Public Grievance Redressal Portal prototype).
+        const prompt = `You are the Official AI Grievance Classification Engine for JANASEVA AI (Government of Kerala Public Grievance Redressal Portal prototype).
 Analyze this citizen grievance and return a JSON object.
 
 Valid Departments:
@@ -121,17 +124,23 @@ REQUIRED JSON OUTPUT FORMAT:
   "confidence": 0.85 to 0.99
 }`;
 
-      const response = await model.generateContent(prompt);
-      const rawText = response.response.text();
-      aiResult = JSON.parse(rawText);
-    } catch (err) {
-      console.warn(`[Gemini API] Request failed (${err.message}). Using intelligent contextual analysis engine.`);
+        const response = await model.generateContent(prompt);
+        const rawText = response.response.text();
+        aiResult = JSON.parse(rawText);
+        if (aiResult?.suggestedDepartment) {
+          modelNameUsed = `Google Gemini (${m})`;
+          break;
+        }
+      } catch (err) {
+        console.warn(`[Gemini API] Model ${m} attempt failed (${err.message}). Trying next candidate.`);
+      }
     }
   }
 
   // If Gemini API was unavailable or returned invalid schema, run contextual rule matching
   if (!aiResult || !aiResult.suggestedDepartment) {
     aiResult = fallbackAnalyze(subject, description, departments);
+    modelNameUsed = 'Local Heuristic Fallback Classifier';
   }
 
   // Safety safeguard: Verify suggested department strictly exists in the database
@@ -153,7 +162,8 @@ REQUIRED JSON OUTPUT FORMAT:
     reasoning: aiResult.reasoning || `Classified under ${finalDepartment} based on subject context and reported civic impact.`,
     confidence: typeof aiResult.confidence === 'number' ? Math.min(Math.max(aiResult.confidence, 0.5), 0.99) : 0.88,
     duplicateWarning: similarMatches.length > 0,
-    similarReferenceIds: similarMatches.map((m) => m.referenceNumber)
+    similarReferenceIds: similarMatches.map((m) => m.referenceNumber),
+    source: modelNameUsed
   };
 
   // Persist AI analysis log
@@ -169,7 +179,7 @@ REQUIRED JSON OUTPUT FORMAT:
       confidence: finalOutput.confidence,
       duplicateWarning: finalOutput.duplicateWarning,
       similarGrievances: similarMatches,
-      modelUsed: genAI ? 'gemini-1.5-flash' : 'rule-contextual-v1'
+      modelUsed: modelNameUsed
     });
   } catch (e) {
     console.error('[AIAnalysis] Failed to save AI analysis record:', e.message);

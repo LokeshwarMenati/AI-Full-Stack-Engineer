@@ -181,6 +181,7 @@ export default function RegisterPage() {
 
           {/* Dual CAPTCHA */}
           <DualCaptcha
+            value={captchaInfo.answer}
             onTurnstileSuccess={(token) => setTurnstileToken(token)}
             onCaptchaChange={({ challengeId, answer }) =>
               setCaptchaInfo({ challengeId, answer })

@@ -510,17 +510,39 @@ Respond strictly in valid JSON format:
   "confidence": 0.95
 }`;
 
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: "application/json" }
-          })
-        });
+        const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+        let geminiData = null;
+        let successfulModel = 'gemini-3.5-flash';
 
-        if (geminiRes.ok) {
-          const geminiData = await geminiRes.json();
+        for (const m of candidateModels) {
+          try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 7000);
+            const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`, {
+              method: 'POST',
+              signal: controller.signal,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json" }
+              })
+            });
+            clearTimeout(timeout);
+
+            if (geminiRes.ok) {
+              const data = await geminiRes.json();
+              if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                geminiData = data;
+                successfulModel = m;
+                break;
+              }
+            }
+          } catch (modelErr) {
+            console.warn(`Gemini model ${m} error:`, modelErr.message);
+          }
+        }
+
+        if (geminiData) {
           const candidateText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
           if (candidateText) {
             const parsed = JSON.parse(candidateText);
@@ -528,7 +550,7 @@ Respond strictly in valid JSON format:
               success: true,
               analysis: {
                 ...parsed,
-                source: 'Google Gemini 1.5 Flash (Production Cloud LLM)',
+                source: `Google Gemini 3.5 Flash (Production Cloud LLM)`,
                 duplicateWarning: false
               }
             });

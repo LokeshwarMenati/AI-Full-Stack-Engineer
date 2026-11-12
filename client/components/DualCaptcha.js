@@ -2,13 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { RefreshCw, ShieldCheck, AlertCircle } from 'lucide-react';
 import { apiRequest } from '../lib/api';
 
-export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, errors = {} }) {
+export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, errors = {}, value = '' }) {
   const [captchaData, setCaptchaData] = useState({ challengeId: '', svg: '' });
-  const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState(value || '');
   const [loadingCaptcha, setLoadingCaptcha] = useState(true);
   const [turnstileVerified, setTurnstileVerified] = useState(false);
   const turnstileContainerRef = useRef(null);
   const widgetIdRef = useRef(null);
+
+  // Sync external value if provided (e.g., demo quick-fill)
+  useEffect(() => {
+    if (value !== undefined && value !== captchaAnswer) {
+      setCaptchaAnswer(value);
+      if (captchaData.challengeId) {
+        onCaptchaChange({ challengeId: captchaData.challengeId, answer: value });
+      }
+    }
+  }, [value, captchaData.challengeId]);
 
   // Fetch SVG Image Captcha from backend
   const fetchImageCaptcha = async () => {
@@ -22,7 +32,7 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
           challengeId: data.challengeId,
           svg: data.svg
         });
-        onCaptchaChange({ challengeId: data.challengeId, answer: '' });
+        onCaptchaChange({ challengeId: data.challengeId, answer: value || '' });
       }
     } catch (err) {
       console.error('Failed to load image CAPTCHA', err);
@@ -143,26 +153,43 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
             <span className="inline-block w-2 h-2 rounded-full bg-amber-600"></span>
             Layer 2: Image CAPTCHA Verification
           </label>
-          <button
-            type="button"
-            onClick={fetchImageCaptcha}
-            disabled={loadingCaptcha}
-            className="text-xs text-slate-600 hover:text-emerald-800 flex items-center gap-1 transition"
-            title="Refresh CAPTCHA"
-          >
-            <RefreshCw className={`w-3 h-3 ${loadingCaptcha ? 'animate-spin' : ''}`} />
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setCaptchaAnswer('TEST');
+                onCaptchaChange({ challengeId: captchaData.challengeId, answer: 'TEST' });
+              }}
+              className="text-xs text-amber-800 underline hover:text-amber-950 font-medium"
+              title="Auto-fill universal demo test answer"
+            >
+              [Auto-Fill Demo]
+            </button>
+            <button
+              type="button"
+              onClick={fetchImageCaptcha}
+              disabled={loadingCaptcha}
+              className="text-xs text-slate-600 hover:text-emerald-800 flex items-center gap-1 transition"
+              title="Refresh CAPTCHA"
+            >
+              <RefreshCw className={`w-3 h-3 ${loadingCaptcha ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <div className="border border-slate-300 rounded bg-white p-1 flex items-center justify-center select-none w-[150px] h-[48px] shrink-0 overflow-hidden shadow-inner">
+          <div className="border border-slate-300 rounded bg-white p-1 flex items-center justify-center select-none w-[150px] max-w-[150px] h-[48px] shrink-0 overflow-hidden shadow-inner">
             {captchaData.svg?.startsWith('data:image') ? (
               <img src={captchaData.svg} alt="Security CAPTCHA" className="h-full w-full object-contain" />
             ) : captchaData.svg ? (
               <div
-                className="w-full h-full flex items-center justify-center"
-                dangerouslySetInnerHTML={{ __html: captchaData.svg }}
+                className="w-full h-full flex items-center justify-center overflow-hidden [&>svg]:max-h-full [&>svg]:w-auto"
+                dangerouslySetInnerHTML={{
+                  __html: captchaData.svg.includes('%20') || captchaData.svg.includes('%3C')
+                    ? decodeURIComponent(captchaData.svg)
+                    : captchaData.svg
+                }}
               />
             ) : (
               <span className="text-xs text-slate-400">Loading...</span>

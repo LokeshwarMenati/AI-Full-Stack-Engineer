@@ -163,6 +163,7 @@ export default function LoginPage() {
 
           {/* Mandatory Dual CAPTCHA */}
           <DualCaptcha
+            value={captchaInfo.answer}
             onTurnstileSuccess={(token) => setTurnstileToken(token)}
             onCaptchaChange={({ challengeId, answer }) =>
               setCaptchaInfo({ challengeId, answer })
