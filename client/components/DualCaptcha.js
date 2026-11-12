@@ -156,17 +156,25 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <div
-            className="border border-slate-300 rounded bg-white p-1 flex items-center justify-center select-none min-w-[140px] h-[48px]"
-            dangerouslySetInnerHTML={{ __html: captchaData.svg || '<span class="text-xs text-slate-400">Loading...</span>' }}
-          />
+          <div className="border border-slate-300 rounded bg-white p-1 flex items-center justify-center select-none w-[150px] h-[48px] shrink-0 overflow-hidden shadow-inner">
+            {captchaData.svg?.startsWith('data:image') ? (
+              <img src={captchaData.svg} alt="Security CAPTCHA" className="h-full w-full object-contain" />
+            ) : captchaData.svg ? (
+              <div
+                className="w-full h-full flex items-center justify-center"
+                dangerouslySetInnerHTML={{ __html: captchaData.svg }}
+              />
+            ) : (
+              <span className="text-xs text-slate-400">Loading...</span>
+            )}
+          </div>
           <input
             type="text"
             value={captchaAnswer}
             onChange={handleAnswerChange}
-            placeholder="Type CAPTCHA characters"
+            placeholder="Type 4 characters"
             maxLength={6}
-            className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm uppercase tracking-widest focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+            className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm uppercase font-mono font-bold tracking-widest focus:ring-2 focus:ring-emerald-700 focus:outline-none"
             required
           />
         </div>
@@ -179,4 +187,3 @@ export default function DualCaptcha({ onTurnstileSuccess, onCaptchaChange, error
     </div>
   );
 }
-

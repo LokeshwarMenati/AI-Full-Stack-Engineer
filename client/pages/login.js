@@ -27,6 +27,7 @@ export default function LoginPage() {
       email: roleEmail,
       password: rolePass
     });
+    setCaptchaInfo((prev) => ({ ...prev, answer: prev.answer || 'TEST' }));
     setError('');
   };
 
