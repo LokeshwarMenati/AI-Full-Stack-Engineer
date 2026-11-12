@@ -485,6 +485,61 @@ export default async function handler(req, res) {
   // 8. POST /api/ai/analyze
   if (endpoint === 'ai/analyze' && req.method === 'POST') {
     const { subject = '', description = '' } = req.body || {};
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // Strict PII Redaction Gateway before sending data to external model
+    const redactedSubject = (subject || '').replace(/\b\d{10}\b/g, '[PHONE REDACTED]').replace(/[\w.-]+@[\w.-]+\.\w+/g, '[EMAIL REDACTED]');
+    const redactedDesc = (description || '').replace(/\b\d{10}\b/g, '[PHONE REDACTED]').replace(/[\w.-]+@[\w.-]+\.\w+/g, '[EMAIL REDACTED]');
+
+    if (apiKey) {
+      try {
+        const prompt = `You are the official Chief Minister Public Grievance Assistant for Kerala (JANASEVA AI).
+Analyze the following civic complaint and provide a structured JSON recommendation.
+Allowed Departments: "Public Works Department", "Health & Family Welfare Department", "General Education Department", "Water Resources Department (KWA)", "Local Self Government Department", "Electricity Department (KSEB)", "Revenue & Disaster Management", "Civil Supplies & Consumer Affairs".
+
+Complaint Subject: ${redactedSubject}
+Complaint Description: ${redactedDesc}
+
+Respond strictly in valid JSON format:
+{
+  "suggestedDepartment": "<matching department from allowed list>",
+  "suggestedCategory": "<category name>",
+  "priority": "<Low|Medium|High|Urgent>",
+  "summary": "<concise one sentence summary for CMO review>",
+  "reasoning": "<civic reasoning>",
+  "confidence": 0.95
+}`;
+
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
+
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          const candidateText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (candidateText) {
+            const parsed = JSON.parse(candidateText);
+            return res.status(200).json({
+              success: true,
+              analysis: {
+                ...parsed,
+                source: 'Google Gemini 1.5 Flash (Production Cloud LLM)',
+                duplicateWarning: false
+              }
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Gemini cloud API error, proceeding to heuristic engine:', err.message);
+      }
+    }
+
+    // Heuristic Fallback Engine (Runs when GEMINI_API_KEY is not configured or throttled)
     const text = `${subject} ${description}`.toLowerCase();
 
     let suggestedDepartment = 'Local Self Government Department';
@@ -528,7 +583,8 @@ export default async function handler(req, res) {
         summary,
         reasoning,
         confidence: 0.92,
-        duplicateWarning: false
+        duplicateWarning: false,
+        source: 'Local Heuristic Fallback Classifier (GEMINI_API_KEY not configured)'
       }
     });
   }
