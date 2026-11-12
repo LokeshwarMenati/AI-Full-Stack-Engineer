@@ -606,7 +606,9 @@ Respond strictly in valid JSON format:
         reasoning,
         confidence: 0.92,
         duplicateWarning: false,
-        source: 'Local Heuristic Fallback Classifier (GEMINI_API_KEY not configured)'
+        source: apiKey
+          ? 'Local Heuristic Fallback Classifier (Google Cloud API Busy/Throttled)'
+          : 'Local Heuristic Fallback Classifier (GEMINI_API_KEY not configured)'
       }
     });
   }
